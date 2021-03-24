@@ -1,9 +1,9 @@
 import { expect } from './setup'
 
-import { ethers } from 'hardhat'
+import { l2ethers as ethers } from 'hardhat'
 import { Contract, Signer } from 'ethers'
 
-describe('ERC20', () => {
+describe('Optimistic ERC20', () => {
   let account1: Signer
   let account2: Signer
   let account3: Signer
