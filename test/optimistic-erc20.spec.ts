@@ -1,6 +1,6 @@
 import { expect } from './setup'
 
-import { l2ethers as ethers } from 'hardhat'
+import { ethers } from 'hardhat'
 import { Contract, Signer } from 'ethers'
 
 describe('Optimistic ERC20', () => {

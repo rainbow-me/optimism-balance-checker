@@ -1,6 +1,6 @@
 import { expect } from './setup'
 
-import { l2ethers as ethers } from 'hardhat'
+import { ethers } from 'hardhat'
 import { Contract, Signer } from 'ethers'
 
 describe('Optimistic BalanceChecker', () => {
@@ -41,6 +41,7 @@ describe('Optimistic BalanceChecker', () => {
             0
         );
     });
+    
     
     it('should let you check the balance of an individual token', async () => {
         const userAddress = await account1.getAddress();
@@ -88,4 +89,18 @@ describe('Optimistic BalanceChecker', () => {
         });        
     });
   });
+
+      
+  it('should let you check the balance of ETH', async () => {
+    const userAddress = await account1.getAddress();
+    const ethBalance = await account1.getBalance();
+
+    const balanceCheckerResponse = await BalanceChecker.balances([userAddress], [ethers.constants.AddressZero]);
+    const ethBalanceViaBalanceChecker = balanceCheckerResponse[0];
+
+    expect(ethBalance).to.equal(
+        ethBalanceViaBalanceChecker
+    );
+  });
+
 })

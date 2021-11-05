@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >0.6.0 <0.8.0;
+pragma solidity =0.8.7;
 
 /**
  * @title An ERC20 Balance Checker
@@ -11,6 +11,13 @@ interface ERC20Token {
  
 
 contract BalanceChecker {
+
+  /* Fallback function, don't accept any ETH */
+  receive() external payable {
+    revert("BalanceChecker does not accept payments");
+  }
+  
+
   
   /*
     Check the token balance of a wallet in a token contract
@@ -19,15 +26,14 @@ contract BalanceChecker {
       - returns 0 if the contract doesn't implement balanceOf
   */
   function tokenBalance(address user, address token) public view returns (uint256) {
-    // check if token is actually a contract
     uint256 tokenCode;
     assembly { tokenCode := extcodesize(token) } // contract code size
   
     if (tokenCode > 0){
         return ERC20Token(token).balanceOf(user);
-    } 
-    
-    return 0;
+    } else {
+      return 0;
+    }
 
   }
 
@@ -42,14 +48,19 @@ contract BalanceChecker {
     user, and so on.
   */
   function balances(address[] memory users, address[] memory tokens) external view returns (uint[] memory) {
-    uint256[] memory addrBalances = new uint256[](tokens.length * users.length);
+    uint[] memory addrBalances = new uint[](tokens.length * users.length);
     
     for(uint i = 0; i < users.length; i++) {
       for (uint j = 0; j < tokens.length; j++) {
         uint addrIdx = j + tokens.length * i;
-        addrBalances[addrIdx] = tokenBalance(users[i], tokens[j]);
+        if (tokens[j] != address(0)) { 
+          addrBalances[addrIdx] = tokenBalance(users[i], tokens[j]);
+        } else {
+          addrBalances[addrIdx] = users[i].balance; // ETH balance    
+        }
       }  
     }
+  
     return addrBalances;
   }
 
