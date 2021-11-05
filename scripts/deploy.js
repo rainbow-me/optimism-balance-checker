@@ -1,9 +1,9 @@
-const { l2ethers } = require("hardhat");
+const { ethers } = require("hardhat");
 
 async function main() {
     // We get the contract to deploy
 
-    const BalanceChecker = await l2ethers.getContractFactory("BalanceChecker");
+    const BalanceChecker = await ethers.getContractFactory("BalanceChecker");
     const balanceChecker = await BalanceChecker.deploy();
   
     console.log("BalanceChecker deployed to:", balanceChecker.address);
